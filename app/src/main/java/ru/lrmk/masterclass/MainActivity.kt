@@ -28,68 +28,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val movies by produceState(initialValue = emptyList<Movie>(), producer = {
-                value = api.movies()
-            })
-            var movie by remember { mutableStateOf(0) }
-            BackHandler(movie != 0) {
-                movie = 0
-            }
-            MasterClassTheme(darkTheme = true) {
-                Surface {
-                    if (movie == 0)
-                        Movies(movies) { movie = it }
-                    else
-                        Movie(movies.first { it.id == movie })
-                }
-            }
         }
-    }
-}
-
-@Composable
-fun Movies(movies: List<Movie>, click: (Int)->Unit) {
-    LazyVerticalGrid(GridCells.Adaptive(120.dp)) {
-        items(movies) {
-            AsyncImage(model = API.small + it.poster_path, contentDescription = "",
-                modifier = Modifier
-                    .size(200.dp)
-                    .clickable { click(it.id) }
-            )
-        }
-    }
-}
-
-@Composable
-fun Movie(movie: Movie) = Box {
-    var show by remember { mutableStateOf(false) }
-    BackHandler(show) { show = false }
-    AsyncImage(model = API.big + movie.backdrop_path, contentDescription = "",
-        Modifier
-            .fillMaxSize()
-            .alpha(0.6f),
-        contentScale = ContentScale.FillHeight,
-        alignment = Alignment.TopCenter
-    )
-    if (show)
-        Player(videoURI = API.video + movie.video)
-    else Column {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp), Arrangement.SpaceBetween){
-            Text(movie.vote_average.toString(), fontSize = 20.sp, style = shadowText)
-            Text(movie.release_date.toString().takeLast(4), fontSize = 20.sp, style = shadowText)
-        }
-        Text(movie.name, Modifier.fillMaxWidth(),
-            fontSize = 24.sp, style = shadowText, textAlign = TextAlign.Center
-        )
-        Text(movie.overview, Modifier.padding(10.dp), textAlign = TextAlign.Justify)
-        AsyncImage(model = API.big + movie.poster_path, contentDescription = "",
-            Modifier
-                .fillMaxWidth()
-                .clickable { show = true }
-                .padding(10.dp)
-        )
     }
 }
