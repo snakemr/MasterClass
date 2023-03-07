@@ -8,12 +8,7 @@ val api = API.getAPI()
 
 interface API {
     @GET(".")
-    suspend fun movies(
-        @Query("genre") genre: Int? = null,
-        @Query("search") search: String = "",
-        @Query("page") page: Int = 1,
-        @Query("limit") limit: Int = 100,
-    ): List<Movie>
+    suspend fun movies(): List<Movie>
 
     companion object {
         private const val base = "https://mad.lrmk.ru/media/"
